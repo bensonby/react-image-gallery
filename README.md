@@ -98,6 +98,7 @@ render: function() {
 * `startIndex`: Integer, default `0`
 * `onSlide`: Function, `callback(index)`
 * `onClick`: Function, `callback(event)`
+* `staticComponent`: node, rendered on the gallery but not on slide
 
 
 # functions

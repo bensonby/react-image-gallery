@@ -24,6 +24,7 @@ const ImageGallery = React.createClass({
     imageContainerHeight: React.PropTypes.number.isRequired,
     thumbnailContainerWidth: React.PropTypes.number,
     thumbnailContainerHeight: React.PropTypes.number,
+    staticComponent: React.PropTypes.node,
   },
 
   getDefaultProps() {
@@ -39,6 +40,7 @@ const ImageGallery = React.createClass({
       startIndex: 0,
       thumbnailContainerWidth: 200,
       thumbnailContainerHeight: 150,
+      staticComponent: false,
     };
   },
 
@@ -336,6 +338,7 @@ const ImageGallery = React.createClass({
                 {slides}
               </div>
           }
+          {this.props.staticComponent}
           {
             this.props.showBullets &&
               <div className='image-gallery-bullets'>

@@ -78,6 +78,16 @@ const App = React.createClass({
         thumbnail: 'http://lorempixel.com/250/150/nature/7/'
       }
     ];
+    const staticComponentStyle = {
+      'zIndex': 2000,
+      'width': 150,
+      'height': 100,
+      'position': 'absolute',
+      'right': 0,
+      'top': 0,
+      'padding': '10px',
+      'background': '#f0f8ff',
+    };
 
     return (
 
@@ -96,6 +106,9 @@ const App = React.createClass({
           imageContainerHeight={600}
           thumbnailContainerWidth={200}
           thumbnailContainerHeight={150}
+          staticComponent={
+            <div style={staticComponentStyle}>I do not move with slides</div>
+          }
         />
 
         <div className='app-sandbox'>
