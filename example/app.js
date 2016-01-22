@@ -106,6 +106,7 @@ const App = React.createClass({
           imageContainerHeight={600}
           thumbnailContainerWidth={200}
           thumbnailContainerHeight={150}
+          marginForThumbnailsNav={50}
           staticComponent={
             <div style={staticComponentStyle}>I do not move with slides</div>
           }

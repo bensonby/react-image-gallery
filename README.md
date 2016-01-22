@@ -99,6 +99,9 @@ render: function() {
 * `onSlide`: Function, `callback(index)`
 * `onClick`: Function, `callback(event)`
 * `staticComponent`: node, rendered on the gallery but not on slide
+* `showThumbnailsNav`: Boolean, default `true`
+* `marginForThumbnailsNav`: Number in pixel, default 40, space for rendering thumbnails nav
+* `marginBetweenThumbnails`: Number in pixel, default 10, meaning 5px on each side
 
 
 # functions

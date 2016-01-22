@@ -25,6 +25,9 @@ const ImageGallery = React.createClass({
     thumbnailContainerWidth: React.PropTypes.number,
     thumbnailContainerHeight: React.PropTypes.number,
     staticComponent: React.PropTypes.node,
+    showThumbnailsNav: React.PropTypes.bool,
+    marginForThumbnailsNav: React.PropTypes.number,
+    marginBetweenThumbnails: React.PropTypes.number,
   },
 
   getDefaultProps() {
@@ -41,6 +44,9 @@ const ImageGallery = React.createClass({
       thumbnailContainerWidth: 200,
       thumbnailContainerHeight: 150,
       staticComponent: false,
+      showThumbnailsNav: true,
+      marginForThumbnailsNav: 40,
+      marginBetweenThumbnails: 10,
     };
   },
 
@@ -51,6 +57,15 @@ const ImageGallery = React.createClass({
       thumbnailsTranslateX: 0,
       containerWidth: 0
     };
+  },
+
+  needThumbnailNav() {
+    const totalThumbnailWidth = this.props.items.length * this.props.thumbnailContainerWidth;
+    const totalMarginWidth = (this.props.items.length - 1) * this.props.marginBetweenThumbnails;
+    if (totalThumbnailWidth + totalMarginWidth <= this.props.imageContainerWidth) {
+      return false;
+    }
+    return this.props.showThumbnailsNav;
   },
 
   componentDidUpdate(prevProps, prevState) {
@@ -80,7 +95,7 @@ const ImageGallery = React.createClass({
     if (prevState.currentThumbnailIndex !== this.state.currentThumbnailIndex) {
 
       // calculates thumbnail container position
-      if (this.state.currentThumbnailIndex === 0) {
+      if (this.state.currentThumbnailIndex === 0 || !this.needThumbnailNav()) {
         this._setThumbnailsTranslateX(0);
       } else {
         let indexDifference = Math.abs(
@@ -155,6 +170,26 @@ const ImageGallery = React.createClass({
     }
   },
 
+  slideThumbnailsToIndex(index, event) {
+    let slideCount = this.props.items.length - 1;
+
+    if (index < 0) {
+      this.setState({currentThumbnailIndex: 0});
+    } else if (index > slideCount) {
+      this.setState({currentThumbnailIndex: slideCount});
+    } else {
+      this.setState({currentThumbnailIndex: index});
+    }
+    if (event) {
+      if (this._intervalId) {
+        // user event, reset interval
+        this.pause();
+        this.play();
+      }
+      event.preventDefault();
+    }
+  },
+
   play() {
     if (this._intervalId) {
       return;
@@ -182,15 +217,19 @@ const ImageGallery = React.createClass({
   },
 
   _getScrollX(indexDifference) {
+    let containerWidthWithoutNav = this.state.containerWidth;
+    if (this.needThumbnailNav()) {
+      containerWidthWithoutNav -= this.props.marginForThumbnailsNav * 2;
+    }
     if (this._thumbnails) {
-      if (this._thumbnails.scrollWidth <= this.state.containerWidth) {
+      if (this._thumbnails.scrollWidth <= containerWidthWithoutNav) {
         return 0;
       }
 
       let totalThumbnails = this._thumbnails.children.length;
 
       // total scroll-x required to see the last thumbnail
-      let totalScrollX = this._thumbnails.scrollWidth - this.state.containerWidth;
+      let totalScrollX = this._thumbnails.scrollWidth - containerWidthWithoutNav;
 
       // scroll-x required per index change
       let perIndexScrollX = totalScrollX / (totalThumbnails - 1);
@@ -237,6 +276,7 @@ const ImageGallery = React.createClass({
 
   render() {
     let currentSlideIndex = this.state.currentSlideIndex;
+    let currentThumbnailIndex = this.state.currentThumbnailIndex;
     let thumbnailStyle = {
       MozTransform: 'translate3d(' + this.state.thumbnailsTranslateX + 'px, 0, 0)',
       WebkitTransform: 'translate3d(' + this.state.thumbnailsTranslateX + 'px, 0, 0)',
@@ -293,6 +333,8 @@ const ImageGallery = React.createClass({
               'backgroundImage': 'url(' + item.thumbnail + ')',
               'width': this.props.thumbnailContainerWidth,
               'height': this.props.thumbnailContainerHeight,
+              'marginLeft': this.props.marginBetweenThumbnails/2,
+              'marginRight': this.props.marginBetweenThumbnails/2,
             }}
 
             onTouchStart={this.slideToIndex.bind(this, index)}
@@ -317,6 +359,22 @@ const ImageGallery = React.createClass({
 
     let swipePrev = this.slideToIndex.bind(this, currentSlideIndex - 1);
     let swipeNext = this.slideToIndex.bind(this, currentSlideIndex + 1);
+
+    const perIndexScrollX = this._getScrollX(1);
+
+    let containerWidthWithoutNav = this.state.containerWidth;
+    if (this.needThumbnailNav()) {
+      containerWidthWithoutNav -= this.props.marginForThumbnailsNav * 2;
+    }
+    const numThumbnailsToScroll = Math.floor(
+      containerWidthWithoutNav / perIndexScrollX
+    ) - 1;
+    let swipeThumbnailsPrev = this.slideThumbnailsToIndex.bind(
+      this, currentThumbnailIndex - numThumbnailsToScroll
+    );
+    let swipeThumbnailsNext = this.slideThumbnailsToIndex.bind(
+      this, currentThumbnailIndex + numThumbnailsToScroll
+    );
     let itemsTotal = this.props.items.length;
 
     return (
@@ -383,11 +441,36 @@ const ImageGallery = React.createClass({
         {
           this.props.showThumbnails &&
             <div className='image-gallery-thumbnails'>
+              {
+                this.needThumbnailNav() &&
+                [
+                  <a
+                    key='leftNav'
+                    className='image-gallery-left-nav'
+                    onTouchStart={swipeThumbnailsPrev}
+                    onClick={swipeThumbnailsPrev}/>,
+                  <a
+                    key='rightNav'
+                    className='image-gallery-right-nav'
+                    onTouchStart={swipeThumbnailsNext}
+                    onClick={swipeThumbnailsNext}/>
+                ]
+              }
               <div
-                ref={(t) => this._thumbnails = t}
-                className='image-gallery-thumbnails-container'
-                style={thumbnailStyle}>
-                {thumbnails}
+                style={this.needThumbnailNav() ?
+                  {
+                    marginLeft: this.props.marginForThumbnailsNav + 'px',
+                    marginRight: this.props.marginForThumbnailsNav + 'px',
+                  } : {}
+                }>
+                <div className='image-gallery-thumbnails-container-outer'>
+                  <div
+                    ref={(t) => this._thumbnails = t}
+                    className='image-gallery-thumbnails-container-inner'
+                    style={thumbnailStyle}>
+                    {thumbnails}
+                  </div>
+                </div>
               </div>
             </div>
         }
