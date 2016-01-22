@@ -20,7 +20,8 @@ const ImageGallery = React.createClass({
     onSlide: React.PropTypes.func,
     onClick: React.PropTypes.func,
     startIndex: React.PropTypes.number,
-    defaultImage: React.PropTypes.string
+    imageContainerWidth: React.PropTypes.number.isRequired,
+    imageContainerHeight: React.PropTypes.number.isRequired,
   },
 
   getDefaultProps() {
@@ -211,18 +212,6 @@ const ImageGallery = React.createClass({
     return alignment;
   },
 
-  _handleImageLoad(event) {
-    if (event.target.className.indexOf('loaded') === -1) {
-      event.target.className += ' loaded';
-    }
-  },
-
-  _handleImageError(event) {
-    if (this.props.defaultImage && event.target.src.indexOf(this.props.defaultImage) === -1) {
-      event.target.src = this.props.defaultImage;
-    }
-  },
-
   render() {
     let currentIndex = this.state.currentIndex;
     let thumbnailStyle = {
@@ -241,6 +230,7 @@ const ImageGallery = React.createClass({
       let alignment = this._getAlignmentClassName(index);
       let originalClass = item.originalClass ? ' ' + item.originalClass : '';
       let thumbnailClass = item.thumbnailClass ? ' ' + item.thumbnailClass : '';
+      let imageContainerClass = item.imageContainerClass ? ' ' + item.imageContainerClass : '';
 
       let slide = (
         <div
@@ -248,7 +238,13 @@ const ImageGallery = React.createClass({
           className={'image-gallery-slide' + alignment + originalClass}
           onClick={this.props.onClick}
           onTouchStart={this.props.onClick}>
-            <img src={item.original} onLoad={this._handleImageLoad} onError={this._handleImageError}/>
+            <div
+              className={'image-gallery-image-container' + imageContainerClass}
+              style={{
+                'backgroundImage': 'url(' + item.original + ')',
+                'width': this.props.imageContainerWidth,
+                'height': this.props.imageContainerHeight,
+              }} />
             {item.description}
         </div>
       );

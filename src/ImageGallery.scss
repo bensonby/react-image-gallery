@@ -89,14 +89,12 @@ $ig-blue: #337ab7;
     @include vendor-prefix('transform', translate3d(100%, 0, 0));
   }
 
-  img {
-    opacity: 0;
+  .image-gallery-image-container {
     transition: opacity .45s ease-out;
-    width: 100%;
-
-    &.loaded {
-      opacity: 1;
-    }
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 0 auto;
   }
 
   span {

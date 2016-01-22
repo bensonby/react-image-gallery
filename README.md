@@ -55,6 +55,7 @@ var images = [
     thumbnail: 'http://lorempixel.com/250/150/nature/1/',
     originalClass: 'featured-slide',
     thumbnailClass: 'featured-thumb',
+    imageContainerClass: 'image-container',
     description: 'Optional description...'
   },
   {
@@ -95,7 +96,6 @@ render: function() {
 * `autoPlay`: Boolean, default `false`
 * `slideInterval`: Integer, default `4000`
 * `startIndex`: Integer, default `0`
-* `defaultImage`: String, default `undefined`
 * `onSlide`: Function, `callback(index)`
 * `onClick`: Function, `callback(event)`
 
@@ -109,6 +109,12 @@ render: function() {
 # Notes
 
 * Feel free to contribute and or provide feedback!
+* If you encounter problem with node-sass, run the followings:
+
+```
+npm uninstall --save-dev gulp-sass
+npm install --save-dev gulp-sass@2
+```
 
 # License
 

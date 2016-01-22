@@ -92,6 +92,8 @@ const App = React.createClass({
           showNav={this.state.showNav}
           slideInterval={parseInt(this.state.slideInterval)}
           autoPlay={this.state.isPlaying}
+          imageContainerWidth={800}
+          imageContainerHeight={600}
         />
 
         <div className='app-sandbox'>
