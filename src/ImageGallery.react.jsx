@@ -46,7 +46,8 @@ const ImageGallery = React.createClass({
 
   getInitialState() {
     return {
-      currentIndex: this.props.startIndex,
+      currentSlideIndex: this.props.startIndex,
+      currentThumbnailIndex: this.props.startIndex,
       thumbnailsTranslateX: 0,
       containerWidth: 0
     };
@@ -62,30 +63,34 @@ const ImageGallery = React.createClass({
       // if container fits all thumbnails its set to 0
 
       this._setThumbnailsTranslateX(
-        -this._getScrollX(this.state.currentIndex > 0 ? 1 : 0) *
-        this.state.currentIndex);
+        -this._getScrollX(this.state.currentThumbnailIndex > 0 ? 1 : 0) *
+        this.state.currentThumbnailIndex);
 
     }
 
-    if (prevState.currentIndex !== this.state.currentIndex) {
+    if (prevState.currentSlideIndex !== this.state.currentSlideIndex) {
 
       // call back function if provided
       if (this.props.onSlide) {
-        this.props.onSlide(this.state.currentIndex);
+        this.props.onSlide(this.state.currentSlideIndex);
       }
 
+    }
+
+    if (prevState.currentThumbnailIndex !== this.state.currentThumbnailIndex) {
+
       // calculates thumbnail container position
-      if (this.state.currentIndex === 0) {
+      if (this.state.currentThumbnailIndex === 0) {
         this._setThumbnailsTranslateX(0);
       } else {
         let indexDifference = Math.abs(
-          prevState.currentIndex - this.state.currentIndex);
+          prevState.currentThumbnailIndex - this.state.currentThumbnailIndex);
         let scrollX = this._getScrollX(indexDifference);
         if (scrollX > 0) {
-          if (prevState.currentIndex < this.state.currentIndex) {
+          if (prevState.currentThumbnailIndex < this.state.currentThumbnailIndex) {
             this._setThumbnailsTranslateX(
               this.state.thumbnailsTranslateX - scrollX);
-          } else if (prevState.currentIndex > this.state.currentIndex) {
+          } else if (prevState.currentThumbnailIndex > this.state.currentThumbnailIndex) {
             this._setThumbnailsTranslateX(
               this.state.thumbnailsTranslateX + scrollX);
           }
@@ -98,7 +103,10 @@ const ImageGallery = React.createClass({
   componentWillReceiveProps(nextProps) {
     if (nextProps.items.length) {
       const startIndex = nextProps.startIndex || 0;
-      this.setState({ currentIndex: startIndex });
+      this.setState({
+        currentSlideIndex: startIndex,
+        currentThumbnailIndex: startIndex,
+      });
     }
   },
 
@@ -122,11 +130,20 @@ const ImageGallery = React.createClass({
     let slideCount = this.props.items.length - 1;
 
     if (index < 0) {
-      this.setState({currentIndex: slideCount});
+      this.setState({
+        currentSlideIndex: slideCount,
+        currentThumbnailIndex: slideCount,
+      });
     } else if (index > slideCount) {
-      this.setState({currentIndex: 0});
+      this.setState({
+        currentSlideIndex: 0,
+        currentThumbnailIndex: 0,
+      });
     } else {
-      this.setState({currentIndex: index});
+      this.setState({
+        currentSlideIndex: index,
+        currentThumbnailIndex: index,
+      });
     }
     if (event) {
       if (this._intervalId) {
@@ -144,7 +161,7 @@ const ImageGallery = React.createClass({
     }
     this._intervalId = window.setInterval(() => {
       if (!this.state.hovering) {
-        this.slideToIndex(this.state.currentIndex + 1);
+        this.slideToIndex(this.state.currentSlideIndex + 1);
       }
     }.bind(this), this.props.slideInterval);
   },
@@ -191,25 +208,25 @@ const ImageGallery = React.createClass({
   },
 
   _getAlignmentClassName(index) {
-    let currentIndex = this.state.currentIndex;
+    let currentSlideIndex = this.state.currentSlideIndex;
     let alignment = '';
     switch (index) {
-      case (currentIndex - 1):
+      case (currentSlideIndex - 1):
         alignment = ' left';
         break;
-      case (currentIndex):
+      case (currentSlideIndex):
         alignment = ' center';
         break;
-      case (currentIndex + 1):
+      case (currentSlideIndex + 1):
         alignment = ' right';
         break;
     }
 
     if (this.props.items.length >= 3) {
-      if (index === 0 && currentIndex === this.props.items.length - 1) {
+      if (index === 0 && currentSlideIndex === this.props.items.length - 1) {
         // set first slide as right slide if were sliding right from last slide
         alignment = ' right';
-      } else if (index === this.props.items.length - 1 && currentIndex === 0) {
+      } else if (index === this.props.items.length - 1 && currentSlideIndex === 0) {
         // set last slide as left slide if were sliding left from first slide
         alignment = ' left';
       }
@@ -219,7 +236,7 @@ const ImageGallery = React.createClass({
   },
 
   render() {
-    let currentIndex = this.state.currentIndex;
+    let currentSlideIndex = this.state.currentSlideIndex;
     let thumbnailStyle = {
       MozTransform: 'translate3d(' + this.state.thumbnailsTranslateX + 'px, 0, 0)',
       WebkitTransform: 'translate3d(' + this.state.thumbnailsTranslateX + 'px, 0, 0)',
@@ -269,7 +286,7 @@ const ImageGallery = React.createClass({
             key={index}
             className={
               'image-gallery-thumbnail' +
-              (currentIndex === index ? ' active' : '') +
+              (currentSlideIndex === index ? ' active' : '') +
               thumbnailClass
             }
             style={{
@@ -289,7 +306,7 @@ const ImageGallery = React.createClass({
             key={index}
             className={
               'image-gallery-bullet ' + (
-                currentIndex === index ? 'active' : '')}
+                currentSlideIndex === index ? 'active' : '')}
 
             onTouchStart={this.slideToIndex.bind(this, index)}
             onClick={this.slideToIndex.bind(this, index)}>
@@ -298,8 +315,8 @@ const ImageGallery = React.createClass({
       }
     });
 
-    let swipePrev = this.slideToIndex.bind(this, currentIndex - 1);
-    let swipeNext = this.slideToIndex.bind(this, currentIndex + 1);
+    let swipePrev = this.slideToIndex.bind(this, currentSlideIndex - 1);
+    let swipeNext = this.slideToIndex.bind(this, currentSlideIndex + 1);
     let itemsTotal = this.props.items.length;
 
     return (
@@ -351,7 +368,7 @@ const ImageGallery = React.createClass({
             this.props.showIndex &&
               <div className='image-gallery-index'>
                 <span className='image-gallery-index-current'>
-                  {this.state.currentIndex + 1}
+                  {this.state.currentSlideIndex + 1}
                 </span>
                 <span className='image-gallery-index-separator'>
                   {this.props.indexSeparator}
