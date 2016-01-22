@@ -94,6 +94,8 @@ const App = React.createClass({
           autoPlay={this.state.isPlaying}
           imageContainerWidth={800}
           imageContainerHeight={600}
+          thumbnailContainerWidth={200}
+          thumbnailContainerHeight={150}
         />
 
         <div className='app-sandbox'>

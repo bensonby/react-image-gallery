@@ -22,6 +22,8 @@ const ImageGallery = React.createClass({
     startIndex: React.PropTypes.number,
     imageContainerWidth: React.PropTypes.number.isRequired,
     imageContainerHeight: React.PropTypes.number.isRequired,
+    thumbnailContainerWidth: React.PropTypes.number,
+    thumbnailContainerHeight: React.PropTypes.number,
   },
 
   getDefaultProps() {
@@ -34,7 +36,9 @@ const ImageGallery = React.createClass({
       indexSeparator: ' / ',
       autoPlay: false,
       slideInterval: 4000,
-      startIndex: 0
+      startIndex: 0,
+      thumbnailContainerWidth: 200,
+      thumbnailContainerHeight: 150,
     };
   },
 
@@ -259,19 +263,21 @@ const ImageGallery = React.createClass({
 
       if (this.props.showThumbnails) {
         thumbnails.push(
-          <a
+          <div
             key={index}
             className={
               'image-gallery-thumbnail' +
               (currentIndex === index ? ' active' : '') +
               thumbnailClass
             }
+            style={{
+              'backgroundImage': 'url(' + item.thumbnail + ')',
+              'width': this.props.thumbnailContainerWidth,
+              'height': this.props.thumbnailContainerHeight,
+            }}
 
             onTouchStart={this.slideToIndex.bind(this, index)}
-            onClick={this.slideToIndex.bind(this, index)}>
-
-            <img src={item.thumbnail} onError={this._handleImageError}/>
-          </a>
+            onClick={this.slideToIndex.bind(this, index)} />
         );
       }
 
