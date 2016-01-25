@@ -303,8 +303,7 @@ const ImageGallery = React.createClass({
           className={'image-gallery-slide' + alignment + originalClass}
           onClick={this.props.onClick}
           onMouseOver={this.props.onMouseOver}
-          onMouseOut={this.props.onMouseOut}
-          onTouchStart={this.props.onClick}>
+          onMouseOut={this.props.onMouseOut}>
             <div
               className={'image-gallery-image-container' + imageContainerClass}
               style={{
