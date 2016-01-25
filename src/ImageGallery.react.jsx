@@ -447,11 +447,19 @@ const ImageGallery = React.createClass({
                   <a
                     key='leftNav'
                     className='image-gallery-left-nav'
+                    style={{
+                      'visibility': this.state.currentThumbnailIndex === 0 ?
+                        'hidden' : 'visible',
+                    }}
                     onTouchStart={swipeThumbnailsPrev}
                     onClick={swipeThumbnailsPrev}/>,
                   <a
                     key='rightNav'
                     className='image-gallery-right-nav'
+                    style={{
+                      'visibility': this.state.currentThumbnailIndex === this.props.items.length - 1 ?
+                        'hidden' : 'visible',
+                    }}
                     onTouchStart={swipeThumbnailsNext}
                     onClick={swipeThumbnailsNext}/>
                 ]
