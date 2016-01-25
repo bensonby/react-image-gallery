@@ -19,7 +19,8 @@ const ImageGallery = React.createClass({
     slideInterval: React.PropTypes.number,
     onSlide: React.PropTypes.func,
     onClick: React.PropTypes.func,
-    onHover: React.PropTypes.func,
+    onMouseOver: React.PropTypes.func,
+    onMouseOut: React.PropTypes.func,
     startIndex: React.PropTypes.number,
     imageContainerWidth: React.PropTypes.number.isRequired,
     imageContainerHeight: React.PropTypes.number.isRequired,
@@ -301,7 +302,8 @@ const ImageGallery = React.createClass({
           key={index}
           className={'image-gallery-slide' + alignment + originalClass}
           onClick={this.props.onClick}
-          onMouseOver={this.props.onHover}
+          onMouseOver={this.props.onMouseOver}
+          onMouseOut={this.props.onMouseOut}
           onTouchStart={this.props.onClick}>
             <div
               className={'image-gallery-image-container' + imageContainerClass}
