@@ -391,16 +391,28 @@ const ImageGallery = React.createClass({
               [
                 this.props.showNav &&
                   [
-                    <a
-                      key='leftNav'
-                      className='image-gallery-left-nav'
-                      onTouchStart={swipePrev}
-                      onClick={swipePrev}/>,
-                    <a
-                      key='rightNav'
-                      className='image-gallery-right-nav'
-                      onTouchStart={swipeNext}
-                      onClick={swipeNext}/>
+                    <div
+                      className='image-gallery-left-nav-container'
+                      key='leftNavContainer'
+                      onClick={swipePrev}>
+                      <div className='image-gallery-nav-wrapper'>
+                        <a
+                          key='leftNav'
+                          className='image-gallery-left-nav'
+                          onTouchStart={swipePrev}/>
+                      </div>
+                    </div>,
+                    <div
+                      key='rightNavContainer'
+                      className='image-gallery-right-nav-container'
+                      onClick={swipeNext}>
+                      <div className='image-gallery-nav-wrapper'>
+                        <a
+                          key='rightNav'
+                          className='image-gallery-right-nav'
+                          onTouchStart={swipeNext}/>
+                      </div>
+                    </div>,
                   ],
                 <Swipeable
                   key='swipeable'
@@ -447,24 +459,34 @@ const ImageGallery = React.createClass({
               {
                 this.needThumbnailNav() &&
                 [
-                  <a
-                    key='leftNav'
-                    className='image-gallery-left-nav'
-                    style={{
-                      'visibility': this.state.currentThumbnailIndex === 0 ?
-                        'hidden' : 'visible',
-                    }}
-                    onTouchStart={swipeThumbnailsPrev}
-                    onClick={swipeThumbnailsPrev}/>,
-                  <a
-                    key='rightNav'
-                    className='image-gallery-right-nav'
-                    style={{
-                      'visibility': this.state.currentThumbnailIndex === this.props.items.length - 1 ?
-                        'hidden' : 'visible',
-                    }}
-                    onTouchStart={swipeThumbnailsNext}
-                    onClick={swipeThumbnailsNext}/>
+                  <div
+                    className='image-gallery-left-nav-container'
+                    onClick={swipeThumbnailsPrev}>
+                    <div className='image-gallery-nav-wrapper'>
+                      <a
+                        key='leftNav'
+                        className='image-gallery-left-nav'
+                        style={{
+                          'visibility': this.state.currentThumbnailIndex === 0 ?
+                            'hidden' : 'visible',
+                        }}
+                        onTouchStart={swipeThumbnailsPrev}/>
+                    </div>
+                  </div>,
+                  <div
+                    className='image-gallery-right-nav-container'
+                    onClick={swipeThumbnailsNext}>
+                    <div className='image-gallery-nav-wrapper'>
+                      <a
+                        key='rightNav'
+                        className='image-gallery-right-nav'
+                        style={{
+                          'visibility': this.state.currentThumbnailIndex === this.props.items.length - 1 ?
+                            'hidden' : 'visible',
+                        }}
+                        onTouchStart={swipeThumbnailsNext}/>
+                    </div>
+                  </div>,
                 ]
               }
               <div
